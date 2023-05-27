@@ -19,7 +19,7 @@ func main() {
 		Debug:   debug,
 	}
 
-	if err := providerserver.Serve(context.Background(), nil, opts); err != nil {
+	if err := providerserver.Serve(context.Background(), NewProvider, opts); err != nil {
 		log.Fatal(err.Error())
 	}
 }
