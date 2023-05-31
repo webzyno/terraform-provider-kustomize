@@ -23,7 +23,10 @@ func (p *KustomizeProvider) Metadata(_ context.Context, _ provider.MetadataReque
 }
 
 func (p *KustomizeProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
-	resp.Schema = schema.Schema{}
+	resp.Schema = schema.Schema{
+		Description: `This Kustomization provider is used to build Kubernetes manifests using Kustomization.
+Although there are existing providers, this provider gives you the best DX and mitigate the datasource's read when apply issue.`,
+	}
 }
 
 func (p *KustomizeProvider) Configure(_ context.Context, _ provider.ConfigureRequest, resp *provider.ConfigureResponse) {

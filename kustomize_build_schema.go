@@ -173,7 +173,7 @@ type SecretArgs struct {
 }
 
 var kustomizeBuildSchema = schema.Schema{
-	Description: "",
+	Description: "Run `kustomize build` to generate Kubernetes manifests and output the YAML string.",
 	Attributes: map[string]schema.Attribute{
 		// Required for testing framework
 		"id": schema.StringAttribute{
