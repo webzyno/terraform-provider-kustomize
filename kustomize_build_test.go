@@ -12,9 +12,7 @@ func TestAccKustomizeBuild_basic(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `data "kustomize_build" "test" {
-						common_annotations = {
-							app = "aquila"
-						}
+						resources = ["github.com/hetznercloud/csi-driver/deploy/kubernetes"]
 					}`,
 			},
 		},
