@@ -17,10 +17,13 @@ func TestAccKustomizeBuild_basic(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `data "kustomize_build" "test" {
-						resources = ["github.com/hetznercloud/csi-driver/deploy/kubernetes"]
+						resources = ["github.com/alex1989hu/kubelet-serving-cert-approver/deploy/standalone/?ref=v0.6.10"]
+						patches = [{
+							path = "test/ksca-affinity.patch.yaml"
+						}]
 					}`,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("data.kustomize_build.test", "resources.0", "github.com/hetznercloud/csi-driver/deploy/kubernetes"),
+					resource.TestCheckResourceAttr("data.kustomize_build.test", "resources.0", "github.com/alex1989hu/kubelet-serving-cert-approver/deploy/standalone/?ref=v0.6.10"),
 				),
 			},
 		},

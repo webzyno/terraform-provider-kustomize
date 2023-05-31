@@ -683,19 +683,21 @@ func toKustomization(model KustomizeBuildModel) ktypes.Kustomization {
 			return ktypes.Patch{
 				Path:  patch.Path.ValueString(),
 				Patch: patch.Patch.ValueString(),
-				Target: &ktypes.Selector{
-					ResId: resid.ResId{
-						Gvk: resid.Gvk{
-							Group:   patch.Target.Group.ValueString(),
-							Version: patch.Target.Version.ValueString(),
-							Kind:    patch.Target.Kind.ValueString(),
+				Target: lo.TernaryF(patch.Target == nil, func() *ktypes.Selector { return nil }, func() *ktypes.Selector {
+					return &ktypes.Selector{
+						ResId: resid.ResId{
+							Gvk: resid.Gvk{
+								Group:   patch.Target.Group.ValueString(),
+								Version: patch.Target.Version.ValueString(),
+								Kind:    patch.Target.Kind.ValueString(),
+							},
+							Name:      patch.Target.Name.ValueString(),
+							Namespace: patch.Target.Namespace.ValueString(),
 						},
-						Name:      patch.Target.Name.ValueString(),
-						Namespace: patch.Target.Namespace.ValueString(),
-					},
-					AnnotationSelector: patch.Target.AnnotationSelector.ValueString(),
-					LabelSelector:      patch.Target.LabelSelector.ValueString(),
-				},
+						AnnotationSelector: patch.Target.AnnotationSelector.ValueString(),
+						LabelSelector:      patch.Target.LabelSelector.ValueString(),
+					}
+				}),
 			}
 		}),
 		Images: lo.Map(model.Images, func(image Image, i int) ktypes.Image {
@@ -710,38 +712,44 @@ func toKustomization(model KustomizeBuildModel) ktypes.Kustomization {
 		Replacements: lo.Map(model.Replacements, func(replacement Replacements, i int) ktypes.ReplacementField {
 			return ktypes.ReplacementField{
 				Replacement: ktypes.Replacement{
-					Source: &ktypes.SourceSelector{
-						ResId: resid.ResId{
-							Gvk: resid.Gvk{
-								Group:   replacement.Source.Group.ValueString(),
-								Version: replacement.Source.Version.ValueString(),
-								Kind:    replacement.Source.Kind.ValueString(),
+					Source: lo.TernaryF(replacement.Source == nil, func() *ktypes.SourceSelector { return nil }, func() *ktypes.SourceSelector {
+						return &ktypes.SourceSelector{
+							ResId: resid.ResId{
+								Gvk: resid.Gvk{
+									Group:   replacement.Source.Group.ValueString(),
+									Version: replacement.Source.Version.ValueString(),
+									Kind:    replacement.Source.Kind.ValueString(),
+								},
+								Name:      replacement.Source.Name.ValueString(),
+								Namespace: replacement.Source.Namespace.ValueString(),
 							},
-							Name:      replacement.Source.Name.ValueString(),
-							Namespace: replacement.Source.Namespace.ValueString(),
-						},
-						FieldPath: replacement.Source.FieldPath.ValueString(),
-						Options: &ktypes.FieldOptions{
-							Delimiter: replacement.Source.Options.Delimiter.ValueString(),
-							Index:     int(replacement.Source.Options.Index.ValueInt64()),
-							Create:    replacement.Source.Options.Create.ValueBool(),
-						},
-					},
+							FieldPath: replacement.Source.FieldPath.ValueString(),
+							Options: lo.TernaryF(replacement.Source.Options == nil, func() *ktypes.FieldOptions { return nil }, func() *ktypes.FieldOptions {
+								return &ktypes.FieldOptions{
+									Delimiter: replacement.Source.Options.Delimiter.ValueString(),
+									Index:     int(replacement.Source.Options.Index.ValueInt64()),
+									Create:    replacement.Source.Options.Create.ValueBool(),
+								}
+							}),
+						}
+					}),
 					Targets: lo.Map(replacement.Targets, func(target ReplacementsInlineTarget, j int) *ktypes.TargetSelector {
 						return &ktypes.TargetSelector{
-							Select: &ktypes.Selector{
-								ResId: resid.ResId{
-									Gvk: resid.Gvk{
-										Group:   target.Select.Group.ValueString(),
-										Version: target.Select.Version.ValueString(),
-										Kind:    target.Select.Kind.ValueString(),
+							Select: lo.TernaryF(target.Select == nil, func() *ktypes.Selector { return nil }, func() *ktypes.Selector {
+								return &ktypes.Selector{
+									ResId: resid.ResId{
+										Gvk: resid.Gvk{
+											Group:   target.Select.Group.ValueString(),
+											Version: target.Select.Version.ValueString(),
+											Kind:    target.Select.Kind.ValueString(),
+										},
+										Name:      target.Select.Name.ValueString(),
+										Namespace: target.Select.Namespace.ValueString(),
 									},
-									Name:      target.Select.Name.ValueString(),
-									Namespace: target.Select.Namespace.ValueString(),
-								},
-								//AnnotationSelector: "",
-								//LabelSelector:      "",
-							},
+									//AnnotationSelector: "",
+									//LabelSelector:      "",
+								}
+							}),
 							Reject: lo.Map(target.Reject, func(reject ReplacementsInlineTargetObject, k int) *ktypes.Selector {
 								return &ktypes.Selector{
 									ResId: resid.ResId{
@@ -758,12 +766,14 @@ func toKustomization(model KustomizeBuildModel) ktypes.Kustomization {
 								}
 							}),
 							FieldPaths: lo.Map(target.FieldPaths, toString),
-							Options: &ktypes.FieldOptions{
-								Delimiter: target.Options.Delimiter.ValueString(),
-								Index:     int(target.Options.Index.ValueInt64()),
-								//Encoding:  "",
-								Create: target.Options.Create.ValueBool(),
-							},
+							Options: lo.TernaryF(target.Options == nil, func() *ktypes.FieldOptions { return nil }, func() *ktypes.FieldOptions {
+								return &ktypes.FieldOptions{
+									Delimiter: target.Options.Delimiter.ValueString(),
+									Index:     int(target.Options.Index.ValueInt64()),
+									//Encoding:  "",
+									Create: target.Options.Create.ValueBool(),
+								}
+							}),
 						}
 					}),
 				},
