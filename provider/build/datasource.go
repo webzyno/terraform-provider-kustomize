@@ -1,4 +1,4 @@
-package main
+package build
 
 import (
 	"context"
@@ -8,6 +8,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"sigs.k8s.io/kustomize/api/krusty"
 	"sigs.k8s.io/kustomize/kyaml/yaml"
+
+	"github.com/webzyno/terraform-provider-kustomize/virtfs"
 )
 
 type KustomizeBuildDataSource struct {
@@ -51,12 +53,12 @@ func (d *KustomizeBuildDataSource) Read(ctx context.Context, req datasource.Read
 	data.Id = types.StringValue("test")
 
 	// Create overlay filesystem and write kustomization.yaml
-	fs, err := NewOverlayFS()
+	fs, err := virtfs.NewOverlayFS()
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to create OverlayFS", err.Error())
 		return
 	}
-	kustomization := toKustomization(data)
+	kustomization := ToKustomization(data)
 	kustomizationContent, err := yaml.Marshal(&kustomization)
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -64,7 +66,7 @@ func (d *KustomizeBuildDataSource) Read(ctx context.Context, req datasource.Read
 			err.Error(),
 		)
 	}
-	if err := fs.WriteFile(KUSTOMIZATION, kustomizationContent); err != nil {
+	if err := fs.WriteFile(virtfs.KUSTOMIZATION, kustomizationContent); err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to write kustomization.yaml to file system",
 			err.Error(),

@@ -6,6 +6,8 @@ import (
 	"log"
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
+
+	"github.com/webzyno/terraform-provider-kustomize/provider"
 )
 
 func main() {
@@ -19,7 +21,7 @@ func main() {
 		Debug:   debug,
 	}
 
-	if err := providerserver.Serve(context.Background(), NewProvider, opts); err != nil {
+	if err := providerserver.Serve(context.Background(), provider.NewProvider, opts); err != nil {
 		log.Fatal(err.Error())
 	}
 }

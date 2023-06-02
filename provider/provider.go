@@ -1,4 +1,4 @@
-package main
+package provider
 
 import (
 	"context"
@@ -6,9 +6,18 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
+	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 	"sigs.k8s.io/kustomize/api/krusty"
+
+	"github.com/webzyno/terraform-provider-kustomize/provider/apply"
+	"github.com/webzyno/terraform-provider-kustomize/provider/build"
 )
+
+var TestAccProtoV6Providers = map[string]func() (tfprotov6.ProviderServer, error){
+	"kustomize": providerserver.NewProtocol6WithError(NewProvider()),
+}
 
 func NewProvider() provider.Provider {
 	return &KustomizeProvider{}
@@ -33,16 +42,19 @@ func (p *KustomizeProvider) Configure(_ context.Context, _ provider.ConfigureReq
 	// Create Kustomize client
 	p.kustomizer = krusty.MakeKustomizer(krusty.MakeDefaultOptions())
 
-	// Make kustomizer available to data source
+	// Make kustomizer available to data source and resource
 	resp.DataSourceData = p.kustomizer
+	resp.ResourceData = p.kustomizer
 }
 
 func (p *KustomizeProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
-		NewKustomizeBuild,
+		build.NewKustomizeBuild,
 	}
 }
 
-func (p *KustomizeProvider) Resources(ctx context.Context) []func() resource.Resource {
-	return []func() resource.Resource{}
+func (p *KustomizeProvider) Resources(_ context.Context) []func() resource.Resource {
+	return []func() resource.Resource{
+		apply.NewKustomizeApply,
+	}
 }

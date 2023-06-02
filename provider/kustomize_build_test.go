@@ -1,4 +1,4 @@
-package main
+package provider
 
 import (
 	"testing"
@@ -8,7 +8,7 @@ import (
 
 func TestAccKustomizeBuild_basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		ProtoV6ProviderFactories: testAccProtoV6Providers,
+		ProtoV6ProviderFactories: TestAccProtoV6Providers,
 		/*ExternalProviders: map[string]resource.ExternalProvider{
 			"random": {
 				Source: "registry.terraform.io/hashicorp/random",
