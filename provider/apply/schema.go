@@ -20,6 +20,11 @@ var kustomizeApplySchema = schema.Schema{
 				Computed:    true,
 				Description: "The generated Kubernetes manifests in yaml format.",
 			},
+			"objects": schema.ListAttribute{
+				ElementType: types.StringType,
+				Computed:    true,
+				Description: "The managed Kubernetes objects in JSON format.",
+			},
 		},
 	),
 }

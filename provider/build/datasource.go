@@ -9,6 +9,7 @@ import (
 	"sigs.k8s.io/kustomize/api/krusty"
 	"sigs.k8s.io/kustomize/kyaml/yaml"
 
+	"github.com/webzyno/terraform-provider-kustomize/client"
 	"github.com/webzyno/terraform-provider-kustomize/virtfs"
 )
 
@@ -35,15 +36,15 @@ func (d *KustomizeBuildDataSource) Configure(ctx context.Context, req datasource
 	}
 
 	// Get kustomizer from provider data
-	kustomizer, ok := req.ProviderData.(*krusty.Kustomizer)
+	clientSet, ok := req.ProviderData.(*client.ClientSet)
 	if !ok {
 		resp.Diagnostics.AddError(
 			"Unexpected Data Source Configure Type",
-			fmt.Sprintf("Expected *krusty.Kustomizer, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+			fmt.Sprintf("Expected *client.ClientSet, got: %T. Please report this issue to the provider developers.", req.ProviderData),
 		)
 		return
 	}
-	d.kustomizer = kustomizer
+	d.kustomizer = clientSet.Kustomizer
 }
 
 func (d *KustomizeBuildDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
