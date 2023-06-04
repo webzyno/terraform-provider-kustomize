@@ -135,7 +135,7 @@ func (r *KustomizeApplyResource) Read(ctx context.Context, req resource.ReadRequ
 	}
 
 	// Run kustomize build and save resmap in yaml
-	resMap, err := kustomizeBuild(r.kustomizer, data)
+	/*resMap, err := kustomizeBuild(r.kustomizer, data)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to run kustomize build",
@@ -191,7 +191,7 @@ func (r *KustomizeApplyResource) Read(ctx context.Context, req resource.ReadRequ
 	data.Objects = objectsModel
 	if resp.Diagnostics.Append(diagnostics...); resp.Diagnostics.HasError() {
 		return
-	}
+	}*/
 
 	if resp.Diagnostics.Append(resp.State.Set(ctx, &data)...); resp.Diagnostics.HasError() {
 		return
