@@ -133,6 +133,7 @@ func (r *KustomizeApplyResource) Read(ctx context.Context, req resource.ReadRequ
 	if resp.Diagnostics.Append(req.State.Get(ctx, &data)...); resp.Diagnostics.HasError() {
 		return
 	}
+	data.Id = types.StringValue("test")
 
 	// Run kustomize build and save resmap in yaml
 	/*resMap, err := kustomizeBuild(r.kustomizer, data)
@@ -204,6 +205,7 @@ func (r *KustomizeApplyResource) Update(ctx context.Context, req resource.Update
 	if resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...); resp.Diagnostics.HasError() {
 		return
 	}
+	data.Id = types.StringValue("test")
 
 	// Run kustomize build and save resmap in yaml
 	resMap, err := kustomizeBuild(r.kustomizer, data)
