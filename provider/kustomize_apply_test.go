@@ -18,11 +18,12 @@ func TestKustomizeApply(t *testing.T) {
 						}
 					}
 
-					resource "kustomize_apply" "metallb" {
-						resources = ["github.com/metallb/metallb/config/native?ref=v0.13.10"]
-						namespace = "metallb-system"
-					}
-					`,
+					resource "kustomize_apply" "ksca" {
+					  resources = ["github.com/alex1989hu/kubelet-serving-cert-approver/deploy/standalone/?ref=v0.6.10"]
+					  patches = [{
+						path = "test/ksca-affinity.patch.yaml"
+					  }]
+					}`,
 				Check: resource.ComposeTestCheckFunc(),
 			},
 			/*{

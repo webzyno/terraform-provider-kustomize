@@ -44,7 +44,9 @@ func (p *KustomizeProvider) Configure(ctx context.Context, req provider.Configur
 	clientSet := &client.ClientSet{}
 
 	// Create Kustomize client
-	clientSet.Kustomizer = krusty.MakeKustomizer(krusty.MakeDefaultOptions())
+	kustomizeOptions := krusty.MakeDefaultOptions()
+	kustomizeOptions.Reorder = krusty.ReorderOptionLegacy
+	clientSet.Kustomizer = krusty.MakeKustomizer(kustomizeOptions)
 
 	// Create Kubernetes dynamic client if kubernetes is set
 	if data.Kubernetes != nil {
