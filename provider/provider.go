@@ -52,15 +52,13 @@ func (p *KustomizeProvider) Configure(ctx context.Context, req provider.Configur
 	if data.Kubernetes != nil {
 		dynamicClient, err := newDynamicClient(*data.Kubernetes)
 		if err != nil {
-			resp.Diagnostics.AddError("Failed to create Kubernetes client.", err.Error())
-			return
+			resp.Diagnostics.AddWarning("Failed to create Kubernetes client.", err.Error())
 		}
 		clientSet.DynamicClient = dynamicClient
 
 		discoveryClient, err := newDiscoveryClient(*data.Kubernetes)
 		if err != nil {
-			resp.Diagnostics.AddError("Failed to create Kubernetes discovery client.", err.Error())
-			return
+			resp.Diagnostics.AddWarning("Failed to create Kubernetes discovery client.", err.Error())
 		}
 		clientSet.DiscoveryClient = discoveryClient
 	}
